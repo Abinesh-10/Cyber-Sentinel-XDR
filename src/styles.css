@@ -1,0 +1,310 @@
+@import "tailwindcss" source(none);
+@source "../src";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-neon: var(--neon);
+  --color-neon-dim: var(--neon-dim);
+  --color-cyber-cyan: var(--cyber-cyan);
+  --color-cyber-amber: var(--cyber-amber);
+  --color-cyber-red: var(--cyber-red);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --font-mono: "JetBrains Mono", "Fira Code", ui-monospace, monospace;
+  --font-display: "Orbitron", "Inter", sans-serif;
+}
+
+:root {
+  --radius: 0.5rem;
+
+  /* Cyber palette */
+  --background: oklch(0.04 0.01 240); /* Premium Matte Black */
+  --foreground: oklch(0.95 0.03 240);
+  --card: oklch(0.08 0.01 240); /* Deep Obsidian Gray */
+  --card-foreground: oklch(0.95 0.03 240);
+  --popover: oklch(0.06 0.01 240);
+  --popover-foreground: oklch(0.95 0.03 240);
+
+  --primary: oklch(0.86 0.24 152); /* neon green #00ff88 */
+  --primary-foreground: oklch(0.04 0.01 240);
+  --secondary: oklch(0.12 0.02 240);
+  --secondary-foreground: oklch(0.95 0.03 240);
+  --muted: oklch(0.1 0.01 240);
+  --muted-foreground: oklch(0.7 0.03 240);
+  --accent: oklch(0.86 0.24 152);
+  --accent-foreground: oklch(0.04 0.01 240);
+  --destructive: oklch(0.65 0.27 25);
+  --destructive-foreground: oklch(0.98 0 0);
+
+  --border: oklch(0.86 0.24 152 / 0.18);
+  --input: oklch(0.86 0.24 152 / 0.2);
+  --ring: oklch(0.86 0.24 152 / 0.55);
+
+  --neon: oklch(0.86 0.24 152);
+  --neon-dim: oklch(0.86 0.24 152 / 0.45);
+  --cyber-cyan: oklch(0.82 0.18 200);
+  --cyber-amber: oklch(0.82 0.18 75);
+  --cyber-red: oklch(0.65 0.27 25);
+
+  --chart-1: oklch(0.86 0.24 152);
+  --chart-2: oklch(0.82 0.18 200);
+  --chart-3: oklch(0.82 0.18 75);
+  --chart-4: oklch(0.65 0.27 25);
+  --chart-5: oklch(0.7 0.2 290);
+
+  --gradient-neon: linear-gradient(135deg, oklch(0.86 0.24 152), oklch(0.82 0.18 200));
+  --gradient-panel: linear-gradient(
+    135deg,
+    oklch(0.1 0.01 240 / 0.85),
+    oklch(0.06 0.01 240 / 0.6)
+  );
+  --shadow-neon: 0 0 28px oklch(0.86 0.24 152 / 0.35), 0 0 60px oklch(0.86 0.24 152 / 0.18);
+  --shadow-panel: 0 8px 32px oklch(0 0 0 / 0.7), inset 0 1px 0 oklch(0.86 0.24 152 / 0.12);
+}
+
+@layer base {
+  * {
+    border-color: var(--color-border);
+  }
+  html,
+  body {
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+  }
+  body {
+    font-family: "Inter", system-ui, sans-serif;
+    background-image:
+      radial-gradient(ellipse at top, oklch(0.86 0.24 152 / 0.08), transparent 60%),
+      radial-gradient(ellipse at bottom right, oklch(0.82 0.18 200 / 0.06), transparent 50%);
+    background-attachment: fixed;
+    overflow-x: hidden;
+  }
+  ::selection {
+    background: var(--neon);
+    color: var(--background);
+  }
+}
+
+@layer components {
+  .glass-panel {
+    background: var(--gradient-panel);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow-panel);
+    border-radius: var(--radius-lg);
+  }
+  .glass-panel-hover {
+    transition: all 0.35s cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+  .glass-panel-hover:hover {
+    border-color: var(--neon-dim);
+    box-shadow: var(--shadow-neon), var(--shadow-panel);
+    transform: translateY(-2px);
+  }
+  .text-glow {
+    text-shadow:
+      0 0 12px var(--neon-dim),
+      0 0 28px var(--neon-dim);
+  }
+  .text-gradient {
+    background: var(--gradient-neon);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  .cyber-grid {
+    background-image:
+      linear-gradient(oklch(0.86 0.24 152 / 0.08) 1px, transparent 1px),
+      linear-gradient(90deg, oklch(0.86 0.24 152 / 0.08) 1px, transparent 1px);
+    background-size: 48px 48px;
+    mask-image: radial-gradient(ellipse at center, black 30%, transparent 75%);
+  }
+  .scanline::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(
+      to bottom,
+      transparent 0,
+      transparent 2px,
+      oklch(0.86 0.24 152 / 0.04) 3px,
+      transparent 4px
+    );
+    pointer-events: none;
+  }
+  .btn-cyber {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.85rem 1.5rem;
+    font-family: var(--font-mono);
+    font-size: 0.82rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--neon);
+    background: linear-gradient(135deg, oklch(0.86 0.24 152 / 0.12), oklch(0.86 0.24 152 / 0.04));
+    border: 1px solid var(--neon-dim);
+    border-radius: var(--radius-sm);
+    clip-path: polygon(8px 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%, 0 8px);
+    transition: all 0.3s ease;
+    cursor: pointer;
+  }
+  .btn-cyber:hover {
+    background: linear-gradient(135deg, oklch(0.86 0.24 152 / 0.3), oklch(0.86 0.24 152 / 0.1));
+    box-shadow: var(--shadow-neon);
+    color: oklch(0.98 0.05 155);
+  }
+  .btn-cyber-primary {
+    background: var(--neon);
+    color: var(--background);
+    border-color: var(--neon);
+    box-shadow: var(--shadow-neon);
+  }
+  .btn-cyber-primary:hover {
+    background: oklch(0.92 0.22 152);
+    color: var(--background);
+  }
+  .corner-frame {
+    position: relative;
+  }
+  .corner-frame::before,
+  .corner-frame::after {
+    content: "";
+    position: absolute;
+    width: 14px;
+    height: 14px;
+    border-color: var(--neon);
+    border-style: solid;
+    border-width: 0;
+  }
+  .corner-frame::before {
+    top: -1px;
+    left: -1px;
+    border-top-width: 2px;
+    border-left-width: 2px;
+  }
+  .corner-frame::after {
+    bottom: -1px;
+    right: -1px;
+    border-bottom-width: 2px;
+    border-right-width: 2px;
+  }
+
+  .ticker-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 999px;
+    background: var(--neon);
+    box-shadow:
+      0 0 10px var(--neon),
+      0 0 20px var(--neon-dim);
+    animation: cyber-pulse 1.6s ease-in-out infinite;
+  }
+}
+
+@keyframes cyber-pulse {
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.35;
+    transform: scale(0.85);
+  }
+}
+@keyframes spin-slow {
+  to {
+    transform: rotate(360deg);
+  }
+}
+@keyframes spin-rev {
+  to {
+    transform: rotate(-360deg);
+  }
+}
+@keyframes float-y {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+@keyframes data-stream {
+  0% {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+  10% {
+    opacity: 1;
+  }
+  90% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(100vh);
+    opacity: 0;
+  }
+}
+@keyframes flicker {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  92% {
+    opacity: 1;
+  }
+  93% {
+    opacity: 0.4;
+  }
+  94% {
+    opacity: 1;
+  }
+}
+
+.animate-spin-slow {
+  animation: spin-slow 30s linear infinite;
+}
+.animate-spin-rev {
+  animation: spin-rev 22s linear infinite;
+}
+.animate-float {
+  animation: float-y 6s ease-in-out infinite;
+}
+.animate-flicker {
+  animation: flicker 5s linear infinite;
+}
