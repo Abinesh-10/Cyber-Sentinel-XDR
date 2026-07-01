@@ -127,14 +127,14 @@ export function Hero() {
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.8 }}
         >
-          <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-primary/30 bg-primary/10 px-3 py-1 font-mono text-[10px] uppercase tracking-widest text-primary">
-            <span className="ticker-dot" /> NEXT-GEN XDR Â· CLASSIFIED BUILD
+          <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-border-strong bg-primary/10 px-3 py-1 font-mono text-[10px] uppercase tracking-widest text-primary">
+            <span className="ticker-dot" /> Extended Detection &amp; Response
           </div>
           <h1 className="font-display text-5xl font-black leading-[1.05] tracking-tight md:text-7xl">
             <span className="block text-foreground/90">CYBER</span>
-            <span className="block text-gradient text-glow">SENTINEL</span>
+            <span className="block text-gradient">SENTINEL</span>
             <span className="mt-3 block text-xl font-mono font-medium uppercase tracking-[0.3em] text-muted-foreground">
-              XDR Â· Threat Engine
+              XDR · Threat Engine
             </span>
           </h1>
           <p className="mt-6 max-w-xl text-lg text-foreground/80">
