@@ -44,12 +44,18 @@ function IndexWrapper() {
 function Index() {
   const { activeTab } = useSOC();
 
+  const isHome = activeTab === "home";
+
   return (
     <div className="relative min-h-screen overflow-x-clip bg-background text-foreground font-mono">
-      <MatrixRain opacity={0.06} />
+      <MatrixRain opacity={0.04} />
       <NavBar />
-      
-      <main className="mx-auto max-w-[95%] px-4 pt-24 pb-12 min-h-[calc(100vh-140px)]">
+
+      <main
+        className={`mx-auto w-full max-w-[1600px] px-4 pb-16 lg:px-6 min-h-[calc(100vh-140px)] ${
+          isHome ? "pt-16" : "pt-24 lg:pt-28"
+        }`}
+      >
         {activeTab === "home" && <HomeView />}
         {activeTab === "command-center" && <SOCCommandCenter />}
         {activeTab === "threat-intel" && <ThreatIntelPage />}
