@@ -78,7 +78,7 @@ function formatAttackType(attackType?: string | null) {
 
 function alertToEntry(alert: BackendAlert): Entry {
   const score =
-    typeof alert.riskScore === "number" ? ` Â· risk ${Math.round(alert.riskScore)}` : "";
+    typeof alert.riskScore === "number" ? ` · risk ${Math.round(alert.riskScore)}` : "";
 
   return {
     sev: normalizeSeverity(alert.severity),
@@ -91,8 +91,8 @@ function alertToEntry(alert: BackendAlert): Entry {
 function attackEventToEntry(event: RealtimeEnvelope<AttackEventPayload>): Entry {
   const payload = event.payload ?? {};
   const attack = payload.attack ?? {};
-  const phase = payload.phase ? ` Â· ${payload.phase}` : "";
-  const intensity = typeof attack.intensity === "number" ? ` Â· intensity ${attack.intensity}` : "";
+  const phase = payload.phase ? ` · ${payload.phase}` : "";
+  const intensity = typeof attack.intensity === "number" ? ` · intensity ${attack.intensity}` : "";
 
   return {
     sev: normalizeSeverity(attack.severity),
@@ -160,7 +160,7 @@ export function AttackFeed() {
             <span className="ml-3 uppercase tracking-widest">/var/log/sentinel/threats.live</span>
           </div>
           <div className="flex items-center gap-2 text-muted-foreground">
-            <span className="ticker-dot" /> streaming Â· tail -F
+            <span className="ticker-dot" /> streaming · tail -F
           </div>
         </div>
         <div
@@ -178,7 +178,7 @@ export function AttackFeed() {
               <span className={`font-bold ${sevColor[e.sev]}`}>[{e.sev}]</span>
               <span className="text-foreground/85">{e.msg}</span>
               <span className="text-muted-foreground">â†’ IP {e.ip}</span>
-              <span className="text-primary/80">Â· auto-mitigated</span>
+              <span className="text-primary/80">· auto-mitigated</span>
             </motion.div>
           ))}
         </div>
