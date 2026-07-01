@@ -1,12 +1,19 @@
 import { motion } from "framer-motion";
 import {
+  ArrowRight,
   Bomb,
+  Bug,
+  Crosshair,
   KeyRound,
   Loader2,
   Pause,
   Play,
+  Power,
   RotateCcw,
   ScanSearch,
+  Share2,
+  ShieldCheck,
+  Siren,
   Skull,
   Square,
   Volume,
@@ -133,11 +140,159 @@ const sevColor: Record<string, string> = {
   ELEVATED: "text-cyber-cyan border-cyber-cyan/60 bg-cyber-cyan/10",
 };
 
+// The six phases every scenario walks through, in plain language so the
+// flow of an attack is readable at a glance — not just a progress %.
+type Phase = {
+  key: string;
+  label: string;
+  icon: typeof Power;
+  blurb: string;
+  tone: "attack" | "threat" | "defense";
+};
+
+const KILL_CHAIN: Phase[] = [
+  { key: "init", label: "Initialize", icon: Power, blurb: "Sandbox armed and attacker tooling staged inside the virtual boundary.", tone: "attack" },
+  { key: "recon", label: "Recon", icon: Crosshair, blurb: "Probing the target for exposed services, open ports and weak points.", tone: "attack" },
+  { key: "exploit", label: "Exploit", icon: Bug, blurb: "Payload delivered against the chosen vector to gain a foothold.", tone: "threat" },
+  { key: "lateral", label: "Lateral Move", icon: Share2, blurb: "Attempting to spread across connected nodes and escalate access.", tone: "threat" },
+  { key: "detected", label: "Detected", icon: Siren, blurb: "Sentinel rules matched the signature and raised a prioritized alert.", tone: "defense" },
+  { key: "contained", label: "Contained", icon: ShieldCheck, blurb: "Run the response playbook to isolate the node and restore posture.", tone: "defense" },
+];
+
+// Map the live simulation state + progress onto the kill-chain index.
+// -1 means nothing is running yet.
+function activePhaseIndex(state: AttackState, progress: number): number {
+  switch (state) {
+    case "initializing":
+      return 0;
+    case "executing":
+      return progress < 34 ? 1 : progress < 67 ? 2 : 3;
+    case "detected":
+      return 4;
+    default:
+      return -1;
+  }
+}
+
+function KillChain({
+  state,
+  progress,
+  scenarioTitle,
+  onResolve,
+}: {
+  state: AttackState;
+  progress: number;
+  scenarioTitle: string | null;
+  onResolve: () => void;
+}) {
+  const active = activePhaseIndex(state, progress);
+  const running = active >= 0;
+  const detected = state === "detected";
+  const current = active >= 0 ? KILL_CHAIN[active] : null;
+
+  return (
+    <div className="glass-panel p-5 md:p-6">
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <div>
+          <span className="eyebrow">Attack Kill Chain</span>
+          <p className="mt-1.5 text-sm text-muted-foreground">
+            {running
+              ? <>Live: <span className="font-semibold text-foreground">{scenarioTitle}</span> — {current?.blurb}</>
+              : "Every scenario advances through these six phases. Launch one below to watch it move in real time."}
+          </p>
+        </div>
+        {running && (
+          <span className="flex items-center gap-2 rounded-full border border-cyber-red/40 bg-cyber-red/10 px-3 py-1 font-mono text-[10px] font-bold uppercase tracking-widest text-cyber-red">
+            <span className="ticker-dot" style={{ background: "var(--cyber-red)" }} />
+            {detected ? "Threat contained by engine" : "Attack in progress"}
+          </span>
+        )}
+      </div>
+
+      <div className="killchain mt-5 grid grid-cols-3 gap-x-2 gap-y-5 md:grid-cols-6">
+        {KILL_CHAIN.map((phase, i) => {
+          const Icon = phase.icon;
+          // last phase ("contained") only completes once the user mitigates
+          const isContainStep = i === 5;
+          const stepState =
+            active < 0
+              ? "idle"
+              : i < active
+                ? "done"
+                : i === active
+                  ? "active"
+                  : "idle";
+          const dotState = isContainStep
+            ? detected
+              ? "active"
+              : "idle"
+            : stepState;
+          const reached = i <= active || (isContainStep && detected);
+
+          return (
+            <div
+              key={phase.key}
+              className="killchain-step text-center"
+              data-state={dotState}
+              data-done={i < active || (i === active && detected) ? "true" : undefined}
+              data-tone={phase.tone === "threat" ? "threat" : undefined}
+            >
+              <span className="killchain-dot" />
+              <div className="flex items-center justify-center gap-1.5">
+                <Icon
+                  className={`h-3.5 w-3.5 ${
+                    reached
+                      ? phase.tone === "threat"
+                        ? "text-cyber-red"
+                        : phase.tone === "defense"
+                          ? "text-primary"
+                          : "text-cyber-cyan"
+                      : "text-muted-foreground/50"
+                  }`}
+                />
+                <span className="font-mono text-[9px] uppercase tracking-widest text-muted-foreground">
+                  0{i + 1}
+                </span>
+              </div>
+              <p
+                className={`text-[11px] font-semibold ${
+                  reached ? "text-foreground" : "text-muted-foreground/60"
+                }`}
+              >
+                {phase.label}
+              </p>
+            </div>
+          );
+        })}
+      </div>
+
+      {detected && (
+        <motion.div
+          initial={{ opacity: 0, y: 8 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="mt-5 flex flex-wrap items-center justify-between gap-3 rounded-lg border border-primary/30 bg-primary/5 px-4 py-3"
+        >
+          <p className="text-xs text-muted-foreground">
+            The engine raised an alert and logged the incident. Containment is the final phase —
+            mitigate it from the Response console.
+          </p>
+          <button
+            onClick={onResolve}
+            className="inline-flex items-center gap-1.5 rounded-md border border-primary/40 bg-primary/10 px-3 py-1.5 font-mono text-[11px] font-semibold uppercase tracking-wider text-primary transition hover:bg-primary/20"
+          >
+            Resolve in Response <ArrowRight className="h-3.5 w-3.5" />
+          </button>
+        </motion.div>
+      )}
+    </div>
+  );
+}
+
 const HISTORY_KEY = "cybersentinel.attackReplayHistory";
 const SIMULATION_DURATION_MS = 3000;
 
 export function AttackSimulation() {
-  const { activeAttack: globalAttack, setActiveAttack, runSimulation } = useSOC();
+  const { activeAttack: globalAttack, setActiveAttack, runSimulation, setActiveTab } = useSOC();
 
   const [activeCode, setActiveCode] = useState<string | null>(null);
   const [activeState, setActiveState] = useState<AttackState>("idle");
@@ -618,20 +773,45 @@ export function AttackSimulation() {
     <>
       <section id="simulation" className="relative mx-auto max-w-7xl px-4">
         <SectionHeader
-          index="// 02"
-          eyebrow="Orchestrated Attack Simulator"
-          title="Mitre Mapped Threat Scenario Decks"
-          description="Initiate intrusion pipelines inside virtual boundaries to audit monitoring detection profiles."
+          eyebrow="Attack Simulator"
+          title="Run a threat, watch the kill chain"
+          description="Launch a safe, sandboxed attack against the virtual network and follow it phase-by-phase as the detection engine catches and classifies it."
         />
-        <div className="mb-4 flex items-center justify-between">
+
+        {/* Live kill-chain — the through-line that makes each run readable */}
+        <KillChain
+          state={activeState}
+          progress={progress}
+          scenarioTitle={activeCode ? attacks.find((a) => a.code === activeCode)?.title ?? null : null}
+          onResolve={() => setActiveTab("incident-response")}
+        />
+
+        {/* Step 1 — pick a scenario */}
+        <div className="mt-10 mb-4 flex flex-wrap items-center justify-between gap-3">
+          <div className="flex items-center gap-3">
+            <span className="grid h-7 w-7 place-items-center rounded-md border border-border-strong bg-primary/10 font-mono text-xs font-bold text-primary">
+              1
+            </span>
+            <div>
+              <h3 className="text-sm font-semibold text-foreground">Choose a scenario</h3>
+              <p className="font-mono text-[10px] uppercase tracking-wider text-muted-foreground">
+                Select a vector and launch — only one runs at a time
+              </p>
+            </div>
+          </div>
           <button
-            className={`btn-cyber !py-1 !px-2 text-[10px] ${demoMode ? "bg-primary/20 text-white" : ""}`}
+            className={`inline-flex items-center gap-1.5 rounded-md border px-3 py-1.5 font-mono text-[10px] font-semibold uppercase tracking-wider transition ${
+              demoMode
+                ? "border-primary/50 bg-primary/15 text-primary"
+                : "border-border bg-card/60 text-muted-foreground hover:text-foreground"
+            }`}
             onClick={() => setDemoMode((prev) => !prev)}
           >
-            Demo Mode: {demoMode ? "ON" : "OFF"}
+            <span className="ticker-dot" style={demoMode ? undefined : { background: "var(--muted-foreground)", boxShadow: "none" }} />
+            Auto-Demo {demoMode ? "On" : "Off"}
           </button>
         </div>
-        
+
         <div className="grid gap-5 md:grid-cols-2">
           {attacks.map((a, i) => {
             const isThisActive = activeCode === a.code;
@@ -800,8 +980,21 @@ export function AttackSimulation() {
           })}
         </div>
 
+        {/* Step 2 — watch the live engine feed */}
+        <div className="mt-10 mb-4 flex items-center gap-3">
+          <span className="grid h-7 w-7 place-items-center rounded-md border border-border-strong bg-primary/10 font-mono text-xs font-bold text-primary">
+            2
+          </span>
+          <div>
+            <h3 className="text-sm font-semibold text-foreground">Follow the engine feed</h3>
+            <p className="font-mono text-[10px] uppercase tracking-wider text-muted-foreground">
+              Real-time telemetry as the attack executes and detection fires
+            </p>
+          </div>
+        </div>
+
         {/* Terminal Logs View */}
-        <div className="mt-8 w-full glass-panel border border-border bg-black/90 p-4 font-mono text-xs text-primary shadow-inner relative overflow-hidden">
+        <div className="w-full glass-panel border border-border bg-black/90 p-4 font-mono text-xs text-primary shadow-inner relative overflow-hidden">
           <div className="absolute top-0 inset-x-0 h-[1px] bg-gradient-to-r from-transparent via-primary/40 to-transparent" />
 
           {/* Step-by-Step Replay Timeline Visual HUD */}
@@ -915,11 +1108,21 @@ export function AttackSimulation() {
         </div>
       </section>
 
-      {showOverlay && <div className="fixed inset-0 bg-red-600 pointer-events-none" style={{ opacity: 0.15 }} />}
+      {showOverlay && (
+        <div
+          className="fixed inset-0 pointer-events-none z-40"
+          style={{ background: "radial-gradient(ellipse at top, var(--cyber-red), transparent 70%)", opacity: 0.12 }}
+        />
+      )}
       {toastMessage && (
-        <div className="fixed top-4 right-4 bg-red-800 text-white px-4 py-2 rounded border border-red-600 shadow-[0_0_10px_rgba(255,0,0,0.7)] z-50">
-          {toastMessage}
-        </div>
+        <motion.div
+          initial={{ opacity: 0, x: 24 }}
+          animate={{ opacity: 1, x: 0 }}
+          className="fixed right-4 top-20 z-50 flex max-w-xs items-start gap-2.5 rounded-lg border border-cyber-red/40 bg-card/95 px-4 py-3 shadow-panel backdrop-blur-xl"
+        >
+          <Siren className="mt-0.5 h-4 w-4 shrink-0 text-cyber-red" />
+          <span className="text-xs leading-relaxed text-foreground">{toastMessage}</span>
+        </motion.div>
       )}
     </>
   );
