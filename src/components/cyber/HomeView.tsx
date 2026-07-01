@@ -34,14 +34,13 @@ export function HomeView() {
           className="border-t border-border/40 pt-16"
         >
           <div className="mb-10">
-            <span className="font-mono text-xs uppercase tracking-[0.25em] text-primary block mb-2">
-              // SECURE INFRASTRUCTURE OVERVIEW
-            </span>
-            <h2 className="font-display text-3xl font-bold tracking-tight text-foreground uppercase">
-              Operational Posture & Vulnerability Briefing
+            <span className="eyebrow">Infrastructure Overview</span>
+            <h2 className="mt-3 font-display text-2xl font-bold tracking-tight text-foreground md:text-[2rem] md:leading-[1.1]">
+              Your security posture, at a glance
             </h2>
-            <p className="text-muted-foreground text-sm max-w-2xl mt-2">
-              Real-time calculations of organizational security health index, active mitigation playbooks, and threat intelligence streams.
+            <p className="text-muted-foreground text-sm max-w-2xl mt-2 leading-relaxed">
+              Live health index, the autonomous analyst's current read, and active threat
+              activity — updated in real time from the detection engine.
             </p>
           </div>
 
