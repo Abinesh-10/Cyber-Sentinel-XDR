@@ -119,7 +119,7 @@ export function Analytics() {
         description="Every chart is wired to live Sentinel streams â€” historical depth, predictive overlays."
       />
       <div className="grid gap-5 lg:grid-cols-2">
-        <Panel title="Threat trends Â· last 24h" sub="Detected vs Blocked">
+        <Panel title="Threat trends · last 24h" sub="Detected vs Blocked">
           <ResponsiveContainer width="100%" height={260}>
             <AreaChart data={trend}>
               <defs>
@@ -150,7 +150,7 @@ export function Analytics() {
           </ResponsiveContainer>
         </Panel>
 
-        <Panel title="Attack distribution" sub="By class Â· last 7d">
+        <Panel title="Attack distribution" sub="By class · last 7d">
           <ResponsiveContainer width="100%" height={260}>
             <BarChart data={dist}>
               <CartesianGrid stroke="rgba(0,255,136,0.08)" />
@@ -186,7 +186,7 @@ export function Analytics() {
           </ResponsiveContainer>
         </Panel>
 
-        <Panel title="Detection performance" sub="Precision vs Recall Â· model v4.281">
+        <Panel title="Detection performance" sub="Precision vs Recall · model v4.281">
           <div className="grid h-[260px] grid-cols-2 gap-4">
             <Gauge label="Precision" value={precision} />
             <Gauge label="Recall" value={recall} />
