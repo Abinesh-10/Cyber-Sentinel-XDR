@@ -50,7 +50,7 @@ export function ThreatHeatmap() {
       <SectionHeader
         index="// 08"
         eyebrow="Threat Heatmap"
-        title="When the adversary works Â· so do we"
+        title="When the adversary works · so do we"
         description="Hot zones reveal attack timing patterns across the global fleet."
       />
       <motion.div
@@ -84,7 +84,7 @@ export function ThreatHeatmap() {
                 {row.map((v, j) => (
                   <div
                     key={j}
-                    title={`${days[i]} ${j}:00 Â· intensity ${(v * 100).toFixed(0)}`}
+                    title={`${days[i]} ${j}:00 · intensity ${(v * 100).toFixed(0)}`}
                     className="aspect-square rounded-sm transition hover:scale-110"
                     style={{
                       background: color(v),
@@ -102,7 +102,7 @@ export function ThreatHeatmap() {
           ))}
         </div>
         <div className="mt-6 flex items-center justify-between font-mono text-[10px] uppercase tracking-widest text-muted-foreground">
-          <span>Hour of day Â· UTC</span>
+          <span>Hour of day · UTC</span>
           <div className="flex items-center gap-2">
             <span>Low</span>
             <div

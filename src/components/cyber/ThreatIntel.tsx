@@ -91,7 +91,7 @@ export function ThreatIntel() {
       icon: HeartPulse,
       label: "Network Health",
       val: (dashboard?.analytics?.health?.overallNetworkHealthScore ?? 98.4).toFixed(1),
-      sub: "Index Â· all sites",
+      sub: "Index · all sites",
       color: "text-cyber-cyan",
     },
     {
